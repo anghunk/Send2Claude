@@ -1,0 +1,47 @@
+{
+  "name": "send2claude",
+  "displayName": "Send2Claude",
+  "publisher": "anghunk",
+  "description": "Send selected code to Claude Code chat",
+  "icon": "icon.png",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anghunk/Send2Claude"
+  },
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:send2claude.send"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "send2claude.send",
+        "title": "Send to Claude Code"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "send2claude.send",
+          "group": "1_modification@10"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "send2claude.send",
+          "group": "1_modification@10"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0"
+  }
+}
