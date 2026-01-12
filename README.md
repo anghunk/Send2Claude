@@ -1,7 +1,6 @@
 # Send2Claude
 
 [![Version](https://img.shields.io/visual-studio-marketplace/v/anghunk.send2claude)](https://marketplace.visualstudio.com/items?itemName=anghunk.send2claude)
-[![Downloads](https://img.shields.io/visual-studio-marketplace/d/anghunk.send2claude)](https://marketplace.visualstudio.com/items?itemName=anghunk.send2claude)
 
 一个 VSCode 扩展，用于快速将代码文件路径或选中的代码片段行数发送给 Claude Code 进行分析和讨论。
 
