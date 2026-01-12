@@ -1,73 +1,65 @@
 const vscode = require('vscode');
 
 function activate(context) {
-    let disposable = vscode.commands.registerCommand('send2claude.send', function (uri) {
-        // 场景1：从资源管理器右键调用（有uri参数）
-        if (uri) {
-            const relativePath = vscode.workspace.asRelativePath(uri);
-            const result = `@${relativePath}`;
-            vscode.env.clipboard.writeText(result).then(() => {
-                vscode.window.showInformationMessage(`Copied: ${result}`);
-            });
-            return;
-        }
-
-        // 场景2：从编辑器调用（无uri参数）
+    // 命令：从编辑器右键调用
+    let editorDisposable = vscode.commands.registerCommand('send2claude.sendFromEditor', function (args) {
         const editor = vscode.window.activeTextEditor;
 
         if (!editor) {
-            vscode.window.showWarningMessage('No active editor');
             return;
         }
 
         const document = editor.document;
-        const selection = editor.selection;
 
-        // 场景2a：选中了文本 → 复制文件路径和行号
-        if (!selection.isEmpty) {
-            // 获取工作区根路径
+        // 检查是否有选中的文本
+        const hasSelection = editor.selections && editor.selections.some(sel => !sel.isEmpty);
+
+        if (hasSelection) {
+            // 有选中：复制文件路径 + 行号
             const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
             if (!workspaceFolder) {
-                vscode.window.showWarningMessage('File is not in a workspace');
                 return;
             }
 
-            // 计算相对路径
             const relativePath = vscode.workspace.asRelativePath(document.uri);
+            const firstSelection = editor.selections.find(sel => !sel.isEmpty);
+            const startLine = firstSelection.start.line + 1;
+            let endLine = firstSelection.end.line + 1;
 
-            // 获取选中行的范围（从1开始计数）
-            const startLine = selection.start.line + 1;
-            let endLine = selection.end.line + 1;
-
-            // 修复：如果选中结束在某行的开头（character=0），且不是起始行，则减1
-            if (selection.end.character === 0 && selection.end.line > selection.start.line) {
-                endLine = selection.end.line;
+            if (firstSelection.end.character === 0 && firstSelection.end.line > firstSelection.start.line) {
+                endLine = firstSelection.end.line;
             }
 
-            // 格式化输出
             let result;
             if (startLine === endLine) {
-                result = `@${relativePath}:${startLine}`;
+                result = `@${relativePath}:${startLine} `;
             } else {
-                result = `@${relativePath}:${startLine}-${endLine}`;
+                result = `@${relativePath}:${startLine}-${endLine} `;
             }
 
-            // 复制到剪贴板
-            vscode.env.clipboard.writeText(result).then(() => {
-                vscode.window.showInformationMessage(`Copied: ${result}`);
-            });
-        }
-        // 场景2b：未选中文本（空白处右键）→ 只复制文件路径
-        else {
+            vscode.env.clipboard.writeText(result);
+        } else {
+            // 无选中：只复制文件路径
             const relativePath = vscode.workspace.asRelativePath(document.uri);
-            const result = `@${relativePath}`;
-            vscode.env.clipboard.writeText(result).then(() => {
-                vscode.window.showInformationMessage(`Copied: ${result}`);
-            });
+            const result = `@${relativePath} `;
+            vscode.env.clipboard.writeText(result);
         }
     });
 
-    context.subscriptions.push(disposable);
+    // 命令：从资源管理器右键调用
+    let explorerDisposable = vscode.commands.registerCommand('send2claude.sendFromExplorer', function (uri) {
+        if (!uri) {
+            return;
+        }
+
+        const relativePath = vscode.workspace.asRelativePath(uri);
+        const result = `@${relativePath} `;
+
+        vscode.env.clipboard.writeText(result);
+    });
+
+    context.subscriptions.push(editorDisposable);
+    context.subscriptions.push(explorerDisposable);
 }
 
 function deactivate() {}

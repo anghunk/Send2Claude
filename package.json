@@ -16,26 +16,31 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:send2claude.send"
+    "onCommand:send2claude.sendFromEditor",
+    "onCommand:send2claude.sendFromExplorer"
   ],
   "main": "./src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "send2claude.send",
+        "command": "send2claude.sendFromEditor",
+        "title": "Send to Claude Code"
+      },
+      {
+        "command": "send2claude.sendFromExplorer",
         "title": "Send to Claude Code"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "send2claude.send",
+          "command": "send2claude.sendFromEditor",
           "group": "1_modification@10"
         }
       ],
       "explorer/context": [
         {
-          "command": "send2claude.send",
+          "command": "send2claude.sendFromExplorer",
           "group": "1_modification@10"
         }
       ]
