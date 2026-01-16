@@ -4,7 +4,7 @@
   "publisher": "anghunk",
   "description": "Send selected code to Claude Code chat",
   "icon": "icon.png",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/anghunk/Send2Claude"
